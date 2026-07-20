@@ -15,10 +15,14 @@ export function buildUpstreamRequest(
   // chatplayground accepts the same content shape as OpenAI (string or
   // ContentPart[]), so we pass `content` through unchanged. The only
   // role normalization: collapse "tool" → "user" (no endpoint has a tool role).
-  const messages: UpstreamMessage[] = req.messages.map((msg) => ({
-    role: msg.role === "tool" ? "user" : msg.role,
-    content: msg.content,
-  }));
+  // Filter out messages with null content (e.g. Zed sends system messages
+  // with content: null when no system prompt is configured).
+  const messages: UpstreamMessage[] = req.messages
+    .filter((msg) => msg.content != null)
+    .map((msg) => ({
+      role: msg.role === "tool" ? "user" : msg.role,
+      content: msg.content,
+    }));
 
   // OpenAI `metadata.save` extension → !noSave. Default: don't pollute the
   // caller's chatplayground history with API traffic (noSave=true).
