@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.DS_Store
+*.log
+coverage/
+tests/fixtures/bundle.js
+
+# Local Clerk user ID for probe scripts — never commit (treat like an API key)
+.clerk-id
+
