@@ -19,7 +19,7 @@ export type OpenAIMessageContent = string | OpenAIContentPart[];
 
 export interface OpenAIMessage {
   role: "system" | "user" | "assistant" | "tool";
-  content: OpenAIMessageContent;
+  content: OpenAIMessageContent | null;   // null = Zed sends this when no system prompt set
   name?: string;
 }
 
