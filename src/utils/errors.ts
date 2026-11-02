@@ -1,3 +1,4 @@
+
 import type { OpenAIErrorEnvelope } from "../types/openai";
 
 export class OpenAIHTTPError extends Error {
@@ -60,10 +61,17 @@ export function upstreamError(
   upstreamStatus: number,
   message: string,
 ): OpenAIHTTPError {
+  // Client-side errors should remain client-side errors.
+  // Server-side errors are reported as 502.
+  const status =
+    upstreamStatus >= 400 && upstreamStatus < 500
+      ? upstreamStatus
+      : 502;
+
   return new OpenAIHTTPError(
-    502,
+    status,
     message,
-    "upstream_error",
+    status < 500 ? "invalid_request_error" : "upstream_error",
     `upstream_${upstreamStatus}`,
   );
 }
